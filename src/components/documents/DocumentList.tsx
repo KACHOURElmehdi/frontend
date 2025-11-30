@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { FileText, ChevronRight, Download } from 'lucide-react';
+import { FileText, Eye, Download, Trash2 } from 'lucide-react';
 import { Document } from '@/types';
 import DocumentStatus from './DocumentStatus';
 import { downloadDocument } from '@/lib/downloadDocument';
+import { deleteDocument } from '@/services/document.service';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface DocumentListProps {
     documents: Document[];
@@ -13,7 +15,9 @@ interface DocumentListProps {
 }
 
 export default function DocumentList({ documents, loading }: DocumentListProps) {
+    const queryClient = useQueryClient();
     const [downloading, setDownloading] = useState<number | null>(null);
+    const [deleting, setDeleting] = useState<number | null>(null);
 
     const handleDownload = async (doc: Document) => {
         try {
@@ -24,6 +28,24 @@ export default function DocumentList({ documents, loading }: DocumentListProps) 
             alert('Failed to download file');
         } finally {
             setDownloading(null);
+        }
+    };
+
+    const handleDelete = async (doc: Document) => {
+        if (!confirm(`Are you sure you want to delete "${doc.originalFilename}"? This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            setDeleting(doc.id);
+            await deleteDocument(doc.id);
+            // Invalidate queries to refresh the list
+            queryClient.invalidateQueries({ queryKey: ['documents'] });
+        } catch (error) {
+            console.error('Delete failed:', error);
+            alert('Failed to delete document');
+        } finally {
+            setDeleting(null);
         }
     };
 
@@ -86,7 +108,7 @@ export default function DocumentList({ documents, loading }: DocumentListProps) 
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                    {doc.category || 'Uncategorized'}
+                                    {doc.category?.name || 'Uncategorized'}
                                 </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -97,17 +119,29 @@ export default function DocumentList({ documents, loading }: DocumentListProps) 
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div className="flex items-center justify-end gap-2">
+                                    <Link
+                                        href={`/documents/${doc.id}`}
+                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                        title="View details"
+                                    >
+                                        <Eye className="w-5 h-5" />
+                                    </Link>
                                     <button
                                         onClick={() => handleDownload(doc)}
                                         disabled={downloading === doc.id}
-                                        className="text-gray-600 hover:text-blue-600 transition-colors disabled:opacity-50"
+                                        className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50"
                                         title="Download file"
                                     >
                                         <Download className={`w-5 h-5 ${downloading === doc.id ? 'animate-pulse' : ''}`} />
                                     </button>
-                                    <Link href={`/documents/${doc.id}`} className="text-blue-600 hover:text-blue-900">
-                                        <ChevronRight className="w-5 h-5" />
-                                    </Link>
+                                    <button
+                                        onClick={() => handleDelete(doc)}
+                                        disabled={deleting === doc.id}
+                                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                                        title="Delete document"
+                                    >
+                                        <Trash2 className={`w-5 h-5 ${deleting === doc.id ? 'animate-pulse' : ''}`} />
+                                    </button>
                                 </div>
                             </td>
                         </tr>
