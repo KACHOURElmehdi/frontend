@@ -1,26 +1,104 @@
 @import "tailwindcss";
 
 :root {
+  /* Modern Premium Palette - Light Mode */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a; /* Slate 900 */
+  
+  --primary: #6366f1; /* Indigo 500 */
+  --primary-foreground: #ffffff;
+  
+  --secondary: #f1f5f9; /* Slate 100 */
+  --secondary-foreground: #0f172a;
+  
+  --accent: #8b5cf6; /* Violet 500 */
+  --accent-foreground: #ffffff;
+  
+  --muted: #f8fafc; /* Slate 50 */
+  --muted-foreground: #64748b; /* Slate 500 */
+  
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  
+  --border: #e2e8f0; /* Slate 200 */
+  --input: #e2e8f0;
+  
+  --radius: 0.75rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  
+  --color-border: var(--border);
+  --color-input: var(--input);
+  
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  
+  /* Font Integration will be handled in layout.tsx but referenced here if needed, 
+     but usually Tailwind 4 picks up CSS vars or we just use the class from next/font */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Modern Premium Palette - Dark Mode */
+    --background: #020617; /* Slate 950 */
+    --foreground: #f8fafc; /* Slate 50 */
+    
+    --primary: #818cf8; /* Indigo 400 */
+    --primary-foreground: #0f172a;
+    
+    --secondary: #1e293b; /* Slate 800 */
+    --secondary-foreground: #f8fafc;
+    
+    --accent: #a78bfa; /* Violet 400 */
+    --accent-foreground: #0f172a;
+    
+    --muted: #0f172a; /* Slate 900 */
+    --muted-foreground: #94a3b8; /* Slate 400 */
+    
+    --card: #0f172a; /* Slate 900 */
+    --card-foreground: #f8fafc;
+    
+    --border: #1e293b; /* Slate 800 */
+    --input: #1e293b;
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
