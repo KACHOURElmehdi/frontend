@@ -1,104 +1,541 @@
 @import "tailwindcss";
 
+/* ============================================
+   DocClassifier Design System
+   Premium, Modern, Futuristic UI
+   ============================================ */
+
 :root {
-  /* Modern Premium Palette - Light Mode */
-  --background: #ffffff;
-  --foreground: #0f172a; /* Slate 900 */
+  /* === Brand Colors === */
+  --brand-50: #eef2ff;
+  --brand-100: #e0e7ff;
+  --brand-200: #c7d2fe;
+  --brand-300: #a5b4fc;
+  --brand-400: #818cf8;
+  --brand-500: #6366f1;
+  --brand-600: #4f46e5;
+  --brand-700: #4338ca;
+  --brand-800: #3730a3;
+  --brand-900: #312e81;
+  --brand-950: #1e1b4b;
+
+  /* === Semantic Colors - Light Mode === */
+  --background: #fafbfc;
+  --background-secondary: #f1f5f9;
+  --background-tertiary: #e2e8f0;
   
-  --primary: #6366f1; /* Indigo 500 */
+  --foreground: #0f172a;
+  --foreground-secondary: #475569;
+  --foreground-muted: #94a3b8;
+  
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
   --primary-foreground: #ffffff;
   
-  --secondary: #f1f5f9; /* Slate 100 */
-  --secondary-foreground: #0f172a;
+  --secondary: #f1f5f9;
+  --secondary-hover: #e2e8f0;
+  --secondary-foreground: #1e293b;
   
-  --accent: #8b5cf6; /* Violet 500 */
+  --accent: #8b5cf6;
+  --accent-hover: #7c3aed;
   --accent-foreground: #ffffff;
   
-  --muted: #f8fafc; /* Slate 50 */
-  --muted-foreground: #64748b; /* Slate 500 */
+  --success: #10b981;
+  --success-light: #d1fae5;
+  --success-foreground: #065f46;
   
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  --warning-foreground: #92400e;
+  
+  --error: #ef4444;
+  --error-light: #fee2e2;
+  --error-foreground: #991b1b;
+  
+  --info: #3b82f6;
+  --info-light: #dbeafe;
+  --info-foreground: #1e40af;
+  
+  /* === Surface & Cards === */
   --card: #ffffff;
+  --card-hover: #f8fafc;
   --card-foreground: #0f172a;
   
-  --border: #e2e8f0; /* Slate 200 */
-  --input: #e2e8f0;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
   
-  --radius: 0.75rem;
+  /* === Borders & Inputs === */
+  --border: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --border-focus: #6366f1;
+  
+  --input: #ffffff;
+  --input-border: #e2e8f0;
+  
+  --ring: #6366f1;
+  --ring-offset: #ffffff;
+  
+  /* === Muted === */
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  
+  /* === Shadows === */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-glow: 0 0 40px -10px rgb(99 102 241 / 0.3);
+  --shadow-glow-lg: 0 0 80px -20px rgb(99 102 241 / 0.4);
+  
+  /* === Radius === */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+  
+  /* === Typography === */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  
+  /* === Transitions === */
+  --transition-fast: 150ms;
+  --transition-normal: 200ms;
+  --transition-slow: 300ms;
+  
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* === Z-Index Scale === */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
 }
 
+/* === Dark Mode === */
+.dark {
+  --background: #0a0a0f;
+  --background-secondary: #12121a;
+  --background-tertiary: #1a1a25;
+  
+  --foreground: #f8fafc;
+  --foreground-secondary: #cbd5e1;
+  --foreground-muted: #64748b;
+  
+  --primary: #818cf8;
+  --primary-hover: #a5b4fc;
+  --primary-foreground: #0f172a;
+  
+  --secondary: #1e293b;
+  --secondary-hover: #334155;
+  --secondary-foreground: #f1f5f9;
+  
+  --accent: #a78bfa;
+  --accent-hover: #c4b5fd;
+  --accent-foreground: #0f172a;
+  
+  --success: #34d399;
+  --success-light: #064e3b;
+  --success-foreground: #d1fae5;
+  
+  --warning: #fbbf24;
+  --warning-light: #78350f;
+  --warning-foreground: #fef3c7;
+  
+  --error: #f87171;
+  --error-light: #7f1d1d;
+  --error-foreground: #fee2e2;
+  
+  --info: #60a5fa;
+  --info-light: #1e3a5f;
+  --info-foreground: #dbeafe;
+  
+  --card: #12121a;
+  --card-hover: #1a1a25;
+  --card-foreground: #f8fafc;
+  
+  --popover: #12121a;
+  --popover-foreground: #f8fafc;
+  
+  --border: #1e293b;
+  --border-hover: #334155;
+  --border-focus: #818cf8;
+  
+  --input: #12121a;
+  --input-border: #1e293b;
+  
+  --ring: #818cf8;
+  --ring-offset: #0a0a0f;
+  
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  
+  --shadow-glow: 0 0 40px -10px rgb(129 140 248 / 0.4);
+  --shadow-glow-lg: 0 0 80px -20px rgb(129 140 248 / 0.5);
+}
+
+/* === Tailwind Theme Integration === */
 @theme inline {
   --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
+  --color-background-tertiary: var(--background-tertiary);
+  
   --color-foreground: var(--foreground);
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-foreground-muted: var(--foreground-muted);
   
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
   
   --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
   --color-secondary-foreground: var(--secondary-foreground);
   
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
   --color-accent-foreground: var(--accent-foreground);
+  
+  --color-success: var(--success);
+  --color-success-light: var(--success-light);
+  --color-success-foreground: var(--success-foreground);
+  
+  --color-warning: var(--warning);
+  --color-warning-light: var(--warning-light);
+  --color-warning-foreground: var(--warning-foreground);
+  
+  --color-error: var(--error);
+  --color-error-light: var(--error-light);
+  --color-error-foreground: var(--error-foreground);
+  
+  --color-info: var(--info);
+  --color-info-light: var(--info-light);
+  --color-info-foreground: var(--info-foreground);
+  
+  --color-card: var(--card);
+  --color-card-hover: var(--card-hover);
+  --color-card-foreground: var(--card-foreground);
+  
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  --color-border-focus: var(--border-focus);
+  
+  --color-input: var(--input);
+  --color-input-border: var(--input-border);
+  
+  --color-ring: var(--ring);
+  --color-ring-offset: var(--ring-offset);
   
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
+  --radius-lg: var(--radius-lg);
+  --radius-md: var(--radius-md);
+  --radius-sm: var(--radius-sm);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-full: var(--radius-full);
   
-  --color-border: var(--border);
-  --color-input: var(--input);
-  
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-  
-  /* Font Integration will be handled in layout.tsx but referenced here if needed, 
-     but usually Tailwind 4 picks up CSS vars or we just use the class from next/font */
+  --font-family-sans: var(--font-sans);
+  --font-family-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Modern Premium Palette - Dark Mode */
-    --background: #020617; /* Slate 950 */
-    --foreground: #f8fafc; /* Slate 50 */
-    
-    --primary: #818cf8; /* Indigo 400 */
-    --primary-foreground: #0f172a;
-    
-    --secondary: #1e293b; /* Slate 800 */
-    --secondary-foreground: #f8fafc;
-    
-    --accent: #a78bfa; /* Violet 400 */
-    --accent-foreground: #0f172a;
-    
-    --muted: #0f172a; /* Slate 900 */
-    --muted-foreground: #94a3b8; /* Slate 400 */
-    
-    --card: #0f172a; /* Slate 900 */
-    --card-foreground: #f8fafc;
-    
-    --border: #1e293b; /* Slate 800 */
-    --input: #1e293b;
-  }
+/* === Base Styles === */
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Glassmorphism Utilities */
+/* === Selection === */
+::selection {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground-muted);
+}
+
+/* === Focus Ring === */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* === Glassmorphism === */
 .glass {
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .dark .glass {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(18, 18, 26, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.dark .glass-subtle {
+  background: rgba(18, 18, 26, 0.6);
+}
+
+/* === Gradients === */
+.gradient-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+}
+
+.gradient-glow {
+  background: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.15) 0%, 
+    rgba(139, 92, 246, 0.15) 50%, 
+    rgba(99, 102, 241, 0.15) 100%
+  );
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* === Mesh Gradient Background === */
+.mesh-gradient {
+  background-color: var(--background);
+  background-image: 
+    radial-gradient(at 40% 20%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+}
+
+/* === Dot Grid Pattern === */
+.dot-pattern {
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* === Grid Pattern === */
+.grid-pattern {
+  background-image: 
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* === Animations === */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px -5px var(--primary); }
+  50% { box-shadow: 0 0 40px -5px var(--primary); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Animation Utilities */
+.animate-fade-in { animation: fade-in 0.3s var(--ease-out); }
+.animate-fade-up { animation: fade-up 0.4s var(--ease-out); }
+.animate-fade-down { animation: fade-down 0.4s var(--ease-out); }
+.animate-slide-in-left { animation: slide-in-left 0.3s var(--ease-out); }
+.animate-slide-in-right { animation: slide-in-right 0.3s var(--ease-out); }
+.animate-scale-in { animation: scale-in 0.2s var(--ease-out); }
+.animate-spin-slow { animation: spin-slow 3s linear infinite; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-bounce-subtle { animation: bounce-subtle 2s ease-in-out infinite; }
+
+.animate-shimmer {
+  background: linear-gradient(90deg, var(--background-secondary) 0%, var(--background-tertiary) 50%, var(--background-secondary) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Stagger Animation */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* === Skeleton Loading === */
+.skeleton {
+  background: linear-gradient(90deg, var(--background-secondary) 0%, var(--background-tertiary) 50%, var(--background-secondary) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+}
+
+/* === Status Colors === */
+.status-uploaded { --status-color: var(--info); --status-bg: var(--info-light); }
+.status-processing { --status-color: var(--warning); --status-bg: var(--warning-light); }
+.status-processed { --status-color: var(--success); --status-bg: var(--success-light); }
+.status-error { --status-color: var(--error); --status-bg: var(--error-light); }
+
+/* === Hover Effects === */
+.hover-lift {
+  transition: transform var(--transition-normal) var(--ease-out), box-shadow var(--transition-normal) var(--ease-out);
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hover-glow {
+  transition: box-shadow var(--transition-normal) var(--ease-out);
+}
+.hover-glow:hover {
+  box-shadow: var(--shadow-glow);
+}
+
+.hover-scale {
+  transition: transform var(--transition-fast) var(--ease-out);
+}
+.hover-scale:hover { transform: scale(1.02); }
+.hover-scale:active { transform: scale(0.98); }
+
+/* === Card Styles === */
+.card-base {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal) var(--ease-out);
+}
+.card-base:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+}
+
+/* === Accessibility === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* === Motion Preferences === */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

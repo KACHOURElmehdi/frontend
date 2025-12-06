@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext";
-import QueryProvider from "@/context/QueryProvider";
+import AppProviders from '@/components/providers/AppProviders';
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "TaskFlow - Manage Your Work",
-  description: "A premium task management solution.",
+  title: "DocClassifier - Intelligent Document Management",
+  description: "AI-powered document classification and organization platform. Upload, classify, and manage your documents with ease.",
+  keywords: ["document management", "AI classification", "OCR", "document organization"],
+  authors: [{ name: "DocClassifier Team" }],
+  openGraph: {
+    title: "DocClassifier - Intelligent Document Management",
+    description: "AI-powered document classification and organization platform.",
+    type: "website",
+  },
 };
-
-import { Toaster } from 'react-hot-toast';
-import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function RootLayout({
   children,
@@ -23,18 +27,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body
-        className={`${inter.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${inter.variable} font-sans antialiased bg-background text-foreground min-h-screen`}
       >
-        <ErrorBoundary>
-          <AuthProvider>
-            <QueryProvider>
-              {children}
-            </QueryProvider>
-            <Toaster position="top-right" />
-          </AuthProvider>
-        </ErrorBoundary>
+        <AppProviders>
+          {children}
+        </AppProviders>
       </body>
     </html>
   );
