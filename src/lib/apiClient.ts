@@ -1,15 +1,29 @@
 import axios from 'axios';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080/api';
+const API_BASE = (process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080/api').replace(/\/+$/, '');
+const API_BASE_WITH_SLASH = `${API_BASE}/`;
+
+const normalizeUrl = (url?: string) => {
+    if (!url) {
+        return url;
+    }
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url;
+    }
+    return url.replace(/^\/+/, '');
+};
 
 export const apiClient = axios.create({
-    baseURL: API_BASE,
+    baseURL: API_BASE_WITH_SLASH,
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
 apiClient.interceptors.request.use((config) => {
+    if (config.url) {
+        config.url = normalizeUrl(config.url);
+    }
     if (typeof window !== 'undefined') {
         const token = localStorage.getItem('token');
         if (token) {

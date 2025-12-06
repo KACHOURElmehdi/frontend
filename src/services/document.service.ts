@@ -30,7 +30,13 @@ export const getDocumentFile = async (id: number) => {
 };
 
 export const searchDocuments = async (params: SearchParams) => {
-    const response = await api.get<SearchResponse>('/documents/search', { params });
+    // Convert 'limit' to 'size' for Spring Pageable
+    const apiParams: Record<string, any> = { ...params };
+    if (apiParams.limit !== undefined) {
+        apiParams.size = apiParams.limit;
+        delete apiParams.limit;
+    }
+    const response = await api.get<SearchResponse>('/documents/search', { params: apiParams });
     return response.data;
 };
 

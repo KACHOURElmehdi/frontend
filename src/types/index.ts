@@ -8,6 +8,7 @@ export interface Document {
     confidence?: number;
     modelVersion?: string;
     category?: Category;
+    ocrText?: string;
     extractedText?: string;
     tags?: Tag[];
     uploadedAt: string;
@@ -20,13 +21,19 @@ export interface Category {
     id: number;
     name: string;
     description?: string;
+    color?: string;
+    documentCount?: number;
 }
 
 export interface Tag {
     id: number;
-    key: string;
-    value: string;
-    valueType: 'STRING' | 'NUMBER' | 'DATE' | 'ENTITY';
+    name: string;
+    color?: string;
+    documentCount?: number;
+    // Legacy fields for extracted data tags
+    key?: string;
+    value?: string;
+    valueType?: 'STRING' | 'NUMBER' | 'DATE' | 'ENTITY';
     confidence?: number;
 }
 
@@ -46,11 +53,13 @@ export interface StatsOverview {
     totalDocuments: number;
     processedDocuments: number;
     errorDocuments: number;
+    totalCategories?: number;
+    totalTags?: number;
     averageConfidence: number;
 }
 
 export interface CategoryStat {
-    category: string;
+    name: string;
     count: number;
 }
 
@@ -59,6 +68,7 @@ export interface SearchParams {
     category?: string;
     status?: string;
     page?: number;
+    size?: number;
     limit?: number;
     fromDate?: string;
     toDate?: string;
