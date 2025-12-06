@@ -101,7 +101,7 @@ export default function DocumentList({ documents, loading }: DocumentListProps) 
                                     <div className="ml-4">
                                         <div className="text-sm font-medium text-gray-900">{doc.originalFilename}</div>
                                         <div className="text-xs text-gray-500">
-                                            {doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString() : 'Unknown date'}
+                                            {doc.uploadedAt ? new Date(doc.uploadedAt).toLocaleDateString() : 'Unknown date'}
                                         </div>
                                     </div>
                                 </div>
