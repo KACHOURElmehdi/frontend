@@ -4,28 +4,57 @@ import { Loader2 } from "lucide-react";
 
 export interface ButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
-    size?: "default" | "sm" | "lg" | "icon";
+    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "gradient" | "subtle";
+    size?: "default" | "sm" | "lg" | "xl" | "icon";
     isLoading?: boolean;
+    leftIcon?: React.ReactNode;
+    rightIcon?: React.ReactNode;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant = "default", size = "default", isLoading, children, ...props }, ref) => {
+    ({ className, variant = "default", size = "default", isLoading, leftIcon, rightIcon, children, ...props }, ref) => {
         return (
             <button
                 className={cn(
-                    "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                    // Base styles
+                    "relative inline-flex items-center justify-center gap-2 font-medium transition-all duration-200",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    "disabled:pointer-events-none disabled:opacity-50",
+                    "active:scale-[0.98]",
+                    // Variants
                     {
-                        "bg-primary text-primary-foreground hover:bg-primary/90": variant === "default",
-                        "bg-red-500 text-white hover:bg-red-600": variant === "destructive",
-                        "border border-input bg-background hover:bg-accent hover:text-accent-foreground": variant === "outline",
-                        "bg-secondary text-secondary-foreground hover:bg-secondary/80": variant === "secondary",
-                        "hover:bg-accent hover:text-accent-foreground": variant === "ghost",
-                        "text-primary underline-offset-4 hover:underline": variant === "link",
-                        "h-10 px-4 py-2": size === "default",
-                        "h-9 rounded-md px-3": size === "sm",
-                        "h-11 rounded-md px-8": size === "lg",
-                        "h-10 w-10": size === "icon",
+                        // Primary (default)
+                        "bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm hover:shadow-md": 
+                            variant === "default",
+                        // Gradient
+                        "bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 shadow-md hover:shadow-lg hover:shadow-primary/25": 
+                            variant === "gradient",
+                        // Destructive
+                        "bg-error text-white hover:bg-error/90 shadow-sm": 
+                            variant === "destructive",
+                        // Outline
+                        "border border-border bg-transparent hover:bg-secondary hover:border-border-hover text-foreground": 
+                            variant === "outline",
+                        // Secondary
+                        "bg-secondary text-secondary-foreground hover:bg-secondary-hover": 
+                            variant === "secondary",
+                        // Subtle
+                        "bg-primary/10 text-primary hover:bg-primary/20": 
+                            variant === "subtle",
+                        // Ghost
+                        "bg-transparent hover:bg-secondary text-foreground-secondary hover:text-foreground": 
+                            variant === "ghost",
+                        // Link
+                        "bg-transparent text-primary underline-offset-4 hover:underline p-0 h-auto": 
+                            variant === "link",
+                    },
+                    // Sizes
+                    {
+                        "h-10 px-4 py-2 text-sm rounded-lg": size === "default",
+                        "h-8 px-3 text-xs rounded-md": size === "sm",
+                        "h-11 px-6 text-sm rounded-lg": size === "lg",
+                        "h-12 px-8 text-base rounded-xl": size === "xl",
+                        "h-10 w-10 p-0 rounded-lg": size === "icon",
                     },
                     className
                 )}
@@ -33,8 +62,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 disabled={isLoading || props.disabled}
                 {...props}
             >
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {children}
+                {isLoading ? (
+                    <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span className="opacity-70">{children}</span>
+                    </>
+                ) : (
+                    <>
+                        {leftIcon && <span className="flex-shrink-0">{leftIcon}</span>}
+                        {children}
+                        {rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
+                    </>
+                )}
             </button>
         );
     }
