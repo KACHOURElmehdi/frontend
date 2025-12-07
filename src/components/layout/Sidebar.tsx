@@ -34,8 +34,8 @@ const mainNavItems: NavItem[] = [
     { href: '/upload', label: 'Upload', icon: Upload },
     { href: '/documents', label: 'Documents', icon: FileText },
     { href: '/search', label: 'Search', icon: Search },
-    { href: '/categories', label: 'Categories', icon: FolderOpen, requiresAdmin: true },
-    { href: '/tags', label: 'Tags', icon: Tags, requiresAdmin: true },
+    { href: '/categories', label: 'Categories', icon: FolderOpen },
+    { href: '/tags', label: 'Tags', icon: Tags },
 ];
 
 const bottomNavItems: NavItem[] = [
