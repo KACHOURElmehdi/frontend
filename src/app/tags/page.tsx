@@ -22,7 +22,7 @@ import {
     Palette,
     CheckCircle2,
     X,
-    ShieldAlert
+    Users
 } from 'lucide-react';
 
 interface TagItem {
@@ -30,6 +30,10 @@ interface TagItem {
     name: string;
     color?: string;
     documentCount?: number;
+    createdByUsername?: string;
+    createdByUserId?: number;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 const PRESET_COLORS = [
@@ -54,7 +58,6 @@ export default function TagsPage() {
             { label: 'Tags', href: '/tags', current: true },
         ] as const,
     };
-    const queryEnabled = !authLoading && isAdmin;
 
     const { data: tags, isLoading } = useQuery({
         queryKey: ['tags'],
@@ -62,9 +65,9 @@ export default function TagsPage() {
             const response = await apiClient.get('/tags');
             return response.data;
         },
-        enabled: queryEnabled,
+        enabled: !authLoading,
     });
-    const isFetching = queryEnabled && isLoading;
+    const isFetching = !authLoading && isLoading;
 
     const createMutation = useMutation({
         mutationFn: (data: { name: string; color?: string }) => 
@@ -73,6 +76,10 @@ export default function TagsPage() {
             queryClient.invalidateQueries({ queryKey: ['tags'] });
             setShowCreateModal(false);
             resetForm();
+        },
+        onError: (error: any) => {
+            console.error('Error creating tag:', error);
+            alert(error.response?.data?.message || error.response?.data || 'Failed to create tag');
         },
     });
 
@@ -143,23 +150,7 @@ export default function TagsPage() {
             <DashboardLayout {...layoutConfig}>
                 <Card>
                     <CardContent className="py-12">
-                        <Spinner size="lg" label="Checking permissions..." className="mx-auto" />
-                    </CardContent>
-                </Card>
-            </DashboardLayout>
-        );
-    }
-
-    if (!isAdmin) {
-        return (
-            <DashboardLayout {...layoutConfig}>
-                <Card>
-                    <CardContent className="py-16 text-center space-y-4">
-                        <ShieldAlert className="w-12 h-12 text-warning mx-auto" />
-                        <h2 className="text-xl font-semibold text-foreground">Administrator access required</h2>
-                        <p className="text-sm text-foreground-muted">
-                            You need admin permissions to create, edit, or delete tags.
-                        </p>
+                        <Spinner size="lg" label="Loading..." className="mx-auto" />
                     </CardContent>
                 </Card>
             </DashboardLayout>
@@ -216,6 +207,23 @@ export default function TagsPage() {
                             </div>
                         </CardContent>
                     </Card>
+                    {isAdmin && (
+                        <Card variant="glass">
+                            <CardContent className="p-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+                                        <Users className="w-5 h-5 text-warning" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold text-foreground">
+                                            {tags ? new Set(tags.filter((t: TagItem) => t.createdByUserId).map((t: TagItem) => t.createdByUserId)).size : 0}
+                                        </p>
+                                        <p className="text-sm text-foreground-muted">Contributors</p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                     <Card variant="glass">
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
@@ -349,28 +357,35 @@ export default function TagsPage() {
                                                             className="w-3 h-3 rounded-full"
                                                             style={{ backgroundColor: tag.color || PRESET_COLORS[0] }}
                                                         />
-                                                        <span className="font-medium text-foreground">{tag.name}</span>
+                                                        <div className="flex flex-col">
+                                                            <span className="font-medium text-foreground">{tag.name}</span>
+                                                            {isAdmin && tag.createdByUsername && (
+                                                                <span className="text-xs text-foreground-muted">by {tag.createdByUsername}</span>
+                                                            )}
+                                                        </div>
                                                         <Badge variant="secondary" className="text-xs">
                                                             {tag.documentCount || 0}
                                                         </Badge>
                                                     </div>
-                                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <Button 
-                                                            variant="ghost" 
-                                                            size="sm"
-                                                            onClick={() => handleOpenEdit(tag)}
-                                                        >
-                                                            <Edit3 className="w-3 h-3" />
-                                                        </Button>
-                                                        <Button 
-                                                            variant="ghost" 
-                                                            size="sm"
-                                                            onClick={() => deleteMutation.mutate(tag.id)}
-                                                            className="hover:text-error"
-                                                        >
-                                                            <Trash2 className="w-3 h-3" />
-                                                        </Button>
-                                                    </div>
+                                                    {isAdmin && (
+                                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Button 
+                                                                variant="ghost" 
+                                                                size="sm"
+                                                                onClick={() => handleOpenEdit(tag)}
+                                                            >
+                                                                <Edit3 className="w-3 h-3" />
+                                                            </Button>
+                                                            <Button 
+                                                                variant="ghost" 
+                                                                size="sm"
+                                                                onClick={() => deleteMutation.mutate(tag.id)}
+                                                                className="hover:text-error"
+                                                            >
+                                                                <Trash2 className="w-3 h-3" />
+                                                            </Button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             ))}
                                         </div>

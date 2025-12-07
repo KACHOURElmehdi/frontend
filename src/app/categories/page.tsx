@@ -21,7 +21,7 @@ import {
     FileText,
     CheckCircle2,
     Palette,
-    ShieldAlert
+    Users
 } from 'lucide-react';
 import { Category as BaseCategory } from '@/types';
 
@@ -54,14 +54,13 @@ export default function CategoriesPage() {
             { label: 'Categories', href: '/categories', current: true },
         ] as const,
     };
-    const queryEnabled = !authLoading && isAdmin;
 
     const { data: categories, isLoading } = useQuery({
         queryKey: ['categories'],
         queryFn: getCategories,
-        enabled: queryEnabled,
+        enabled: !authLoading,
     });
-    const isFetching = queryEnabled && isLoading;
+    const isFetching = !authLoading && isLoading;
 
     const createMutation = useMutation({
         mutationFn: (data: { name: string; description?: string; color?: string }) => 
@@ -131,23 +130,7 @@ export default function CategoriesPage() {
             <DashboardLayout {...layoutConfig}>
                 <Card>
                     <CardContent className="py-12">
-                        <Spinner size="lg" label="Checking permissions..." className="mx-auto" />
-                    </CardContent>
-                </Card>
-            </DashboardLayout>
-        );
-    }
-
-    if (!isAdmin) {
-        return (
-            <DashboardLayout {...layoutConfig}>
-                <Card>
-                    <CardContent className="py-16 text-center space-y-4">
-                        <ShieldAlert className="w-12 h-12 text-warning mx-auto" />
-                        <h2 className="text-xl font-semibold text-foreground">Administrator access required</h2>
-                        <p className="text-sm text-foreground-muted">
-                            You need admin permissions to create, edit, or delete categories.
-                        </p>
+                        <Spinner size="lg" label="Loading..." className="mx-auto" />
                     </CardContent>
                 </Card>
             </DashboardLayout>
@@ -157,6 +140,55 @@ export default function CategoriesPage() {
     return (
         <DashboardLayout {...layoutConfig}>
             <div className="space-y-6">
+                {/* Admin Analytics */}
+                {isAdmin && !isFetching && categories && categories.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <Card variant="glass">
+                            <CardContent className="p-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                        <FolderOpen className="w-5 h-5 text-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold text-foreground">{categories.length}</p>
+                                        <p className="text-sm text-foreground-muted">Total Categories</p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card variant="glass">
+                            <CardContent className="p-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center">
+                                        <Users className="w-5 h-5 text-success" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold text-foreground">
+                                            {new Set(categories.filter((c: Category) => c.createdByUserId).map((c: Category) => c.createdByUserId)).size}
+                                        </p>
+                                        <p className="text-sm text-foreground-muted">Contributors</p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card variant="glass">
+                            <CardContent className="p-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                                        <FileText className="w-5 h-5 text-accent" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold text-foreground">
+                                            {categories.reduce((sum: number, c: Category) => sum + (c.documentCount || 0), 0)}
+                                        </p>
+                                        <p className="text-sm text-foreground-muted">Categorized Docs</p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                )}
+
                 {/* Header Actions */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="relative w-full sm:w-64">
@@ -230,26 +262,33 @@ export default function CategoriesPage() {
                                                     <FileText className="w-3 h-3" />
                                                     {category.documentCount || 0} documents
                                                 </p>
+                                                {isAdmin && category.createdByUsername && (
+                                                    <p className="text-xs text-foreground-muted mt-0.5">
+                                                        Created by: {category.createdByUsername}
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
                                         
-                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Button 
-                                                variant="ghost" 
-                                                size="sm"
-                                                onClick={() => handleOpenEdit(category)}
-                                            >
-                                                <Edit3 className="w-4 h-4" />
-                                            </Button>
-                                            <Button 
-                                                variant="ghost" 
-                                                size="sm"
-                                                onClick={() => deleteMutation.mutate(category.id)}
-                                                className="hover:text-error"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
-                                        </div>
+                                        {isAdmin && (
+                                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="sm"
+                                                    onClick={() => handleOpenEdit(category)}
+                                                >
+                                                    <Edit3 className="w-4 h-4" />
+                                                </Button>
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="sm"
+                                                    onClick={() => deleteMutation.mutate(category.id)}
+                                                    className="hover:text-error"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {category.description && (
