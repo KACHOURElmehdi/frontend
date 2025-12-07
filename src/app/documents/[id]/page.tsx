@@ -40,6 +40,7 @@ import {
 } from 'lucide-react';
 import { downloadDocument } from '@/lib/downloadDocument';
 import DocumentActionsMenu from '@/components/documents/DocumentActionsMenu';
+import TagSelector from '@/components/documents/TagSelector';
 
 export default function DocumentPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -47,6 +48,7 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [showReclassifyModal, setShowReclassifyModal] = useState(false);
+    const [showTagSelector, setShowTagSelector] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [isReclassifying, setIsReclassifying] = useState(false);
     const [showOcrText, setShowOcrText] = useState(false);
@@ -157,6 +159,26 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
             console.error('Reclassification failed', err);
         } finally {
             setIsReclassifying(false);
+        }
+    };
+
+    const handleAddTag = async (tagId: number) => {
+        try {
+            await apiClient.post(`/documents/${id}/tags/${tagId}`);
+            await fetchDocument();
+        } catch (err) {
+            console.error('Failed to add tag', err);
+            alert('Failed to add tag');
+        }
+    };
+
+    const handleRemoveTag = async (tagId: number) => {
+        try {
+            await apiClient.delete(`/documents/${id}/tags/${tagId}`);
+            await fetchDocument();
+        } catch (err) {
+            console.error('Failed to remove tag', err);
+            alert('Failed to remove tag');
         }
     };
 
@@ -361,7 +383,11 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
                                                 </p>
                                             </div>
                                         </div>
-                                        <Button variant="ghost" size="sm">
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm"
+                                            onClick={() => setShowTagSelector(true)}
+                                        >
                                             <Plus className="w-4 h-4" />
                                         </Button>
                                     </div>
@@ -370,7 +396,10 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
                                             document.tags.map((tag) => (
                                                 <Badge key={tag.id} variant="secondary">
                                                     {tag.name}
-                                                    <button className="ml-1 hover:text-error transition-colors">
+                                                    <button 
+                                                        className="ml-1 hover:text-error transition-colors"
+                                                        onClick={() => handleRemoveTag(tag.id)}
+                                                    >
                                                         <X className="w-3 h-3" />
                                                     </button>
                                                 </Badge>
@@ -544,6 +573,14 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
                     </div>
                 </div>
             </Modal>
+
+            {/* Tag Selector Modal */}
+            <TagSelector
+                isOpen={showTagSelector}
+                onClose={() => setShowTagSelector(false)}
+                onSelectTag={handleAddTag}
+                selectedTagIds={document?.tags?.map(t => t.id) || []}
+            />
         </DashboardLayout>
     );
 }
