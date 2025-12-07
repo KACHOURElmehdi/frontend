@@ -54,3 +54,10 @@ export const deleteDocument = async (id: number) => {
     const response = await api.delete(`/documents/${id}`);
     return response.data;
 };
+
+export const getRecentDocuments = async (limit: number = 10) => {
+    const response = await api.get<Document[]>('/documents', {
+        params: { size: limit, sort: 'uploadedAt,desc' }
+    });
+    return response.data;
+};
