@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Spinner, EmptyState } from '@/components/ui/Misc';
 import { useQuery } from '@tanstack/react-query';
 import { getStats, getCategoryStats } from '@/services/stats.service';
+import { searchDocuments } from '@/services/document.service';
 import { 
     FileText, 
     CheckCircle2, 
@@ -89,7 +90,7 @@ function CategoryDistribution({ data }: { data: Array<{ name: string; count: num
             <CardContent>
                 {data.length === 0 ? (
                     <EmptyState 
-                        icon={FolderOpen} 
+                        icon={<FolderOpen />} 
                         title="No categories yet" 
                         description="Upload documents to see category distribution"
                     />
@@ -135,14 +136,52 @@ function CategoryDistribution({ data }: { data: Array<{ name: string; count: num
     );
 }
 
+// Helper function to format relative time
+function formatRelativeTime(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'just now';
+    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+}
+
+// Helper function to get status info from document
+function getDocumentStatus(doc: any) {
+    switch (doc.status) {
+        case 'PROCESSED':
+            return { action: 'Classification complete', status: 'success' };
+        case 'PROCESSING':
+            return { action: 'Processing started', status: 'processing' };
+        case 'ERROR':
+            return { action: 'Processing failed', status: 'error' };
+        case 'UPLOADED':
+            return { action: 'Document uploaded', status: 'success' };
+        default:
+            return { action: 'Document updated', status: 'info' };
+    }
+}
+
 function RecentActivity() {
-    // TODO: Fetch real recent activity
-    const activities = [
-        { id: 1, action: 'Document uploaded', name: 'Invoice_2024.pdf', time: '5 min ago', status: 'success' },
-        { id: 2, action: 'Classification complete', name: 'Contract_Draft.docx', time: '12 min ago', status: 'success' },
-        { id: 3, action: 'Processing started', name: 'Report_Q1.pdf', time: '20 min ago', status: 'processing' },
-        { id: 4, action: 'Document reclassified', name: 'Memo_Final.pdf', time: '1 hour ago', status: 'info' },
-    ];
+    const { data: recentDocs, isLoading } = useQuery({
+        queryKey: ['recent-documents'],
+        queryFn: () => searchDocuments({ limit: 5, size: 5 }),
+    });
+
+    const activities = recentDocs?.content?.map(doc => {
+        const statusInfo = getDocumentStatus(doc);
+        return {
+            id: doc.id,
+            name: doc.originalFilename,
+            time: formatRelativeTime(doc.processedAt || doc.uploadedAt),
+            ...statusInfo
+        };
+    }) || [];
 
     const statusColors = {
         success: 'bg-success/10 text-success',
@@ -164,9 +203,13 @@ function RecentActivity() {
                 <Button variant="ghost" size="sm">View all</Button>
             </CardHeader>
             <CardContent>
-                {activities.length === 0 ? (
+                {isLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                        <Spinner size="md" label="Loading activity..." />
+                    </div>
+                ) : activities.length === 0 ? (
                     <EmptyState 
-                        icon={Clock} 
+                        icon={<Clock />} 
                         title="No recent activity" 
                         description="Activity will appear here as you use the platform"
                     />
