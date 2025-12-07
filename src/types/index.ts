@@ -23,6 +23,10 @@ export interface Category {
     description?: string;
     color?: string;
     documentCount?: number;
+    createdByUsername?: string;
+    createdByUserId?: number;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface Tag {
@@ -30,6 +34,10 @@ export interface Tag {
     name: string;
     color?: string;
     documentCount?: number;
+    createdByUsername?: string;
+    createdByUserId?: number;
+    createdAt?: string;
+    updatedAt?: string;
     // Legacy fields for extracted data tags
     key?: string;
     value?: string;
