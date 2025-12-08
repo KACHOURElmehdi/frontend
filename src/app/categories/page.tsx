@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -38,6 +39,7 @@ const PRESET_COLORS = [
 ];
 
 export default function CategoriesPage() {
+    const router = useRouter();
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState('');
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -46,6 +48,14 @@ export default function CategoriesPage() {
     const [categoryDescription, setCategoryDescription] = useState('');
     const [categoryColor, setCategoryColor] = useState(PRESET_COLORS[0]);
     const { isAdmin, loading: authLoading } = useAuth();
+    
+    // Redirect non-admin users
+    useEffect(() => {
+        if (!authLoading && !isAdmin) {
+            router.push('/dashboard');
+        }
+    }, [isAdmin, authLoading, router]);
+
     const layoutConfig = {
         title: 'Categories',
         description: 'Manage document classification categories',

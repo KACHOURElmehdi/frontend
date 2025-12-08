@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -43,6 +44,7 @@ const PRESET_COLORS = [
 ];
 
 export default function TagsPage() {
+    const router = useRouter();
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState('');
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -50,6 +52,14 @@ export default function TagsPage() {
     const [tagName, setTagName] = useState('');
     const [tagColor, setTagColor] = useState(PRESET_COLORS[0]);
     const { isAdmin, loading: authLoading } = useAuth();
+    
+    // Redirect non-admin users
+    useEffect(() => {
+        if (!authLoading && !isAdmin) {
+            router.push('/dashboard');
+        }
+    }, [isAdmin, authLoading, router]);
+
     const layoutConfig = {
         title: 'Tags',
         description: 'Organize documents with custom tags',
