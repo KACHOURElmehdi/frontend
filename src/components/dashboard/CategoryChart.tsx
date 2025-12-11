@@ -30,7 +30,7 @@ interface CategoryChartProps {
 
 export default function CategoryChart({ data }: CategoryChartProps) {
     const chartData = {
-        labels: data.map(d => d.category),
+        labels: data.map(d => d.name),
         datasets: [
             {
                 label: '# of Documents',

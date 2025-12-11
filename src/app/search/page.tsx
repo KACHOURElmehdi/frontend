@@ -373,9 +373,9 @@ export default function DocumentsPage() {
                                                         {tag.name}
                                                     </Badge>
                                                 ))}
-                                                {doc.tags?.length > 2 && (
+                                                {(doc.tags?.length ?? 0) > 2 && (
                                                     <Badge variant="secondary" className="text-xs">
-                                                        +{doc.tags.length - 2}
+                                                        +{(doc.tags?.length ?? 0) - 2}
                                                     </Badge>
                                                 )}
                                             </div>

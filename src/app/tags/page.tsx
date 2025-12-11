@@ -66,7 +66,7 @@ export default function TagsPage() {
         breadcrumbs: [
             { label: 'Dashboard', href: '/dashboard' },
             { label: 'Tags', href: '/tags', current: true },
-        ] as const,
+        ],
     };
 
     const { data: tags, isLoading } = useQuery({

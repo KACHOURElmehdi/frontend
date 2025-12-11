@@ -62,7 +62,7 @@ export default function CategoriesPage() {
         breadcrumbs: [
             { label: 'Dashboard', href: '/dashboard' },
             { label: 'Categories', href: '/categories', current: true },
-        ] as const,
+        ],
     };
 
     const { data: categories, isLoading } = useQuery({

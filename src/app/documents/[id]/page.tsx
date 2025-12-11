@@ -357,7 +357,7 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
                                                     <p className="font-semibold text-foreground">{confidenceScore}%</p>
                                                 </div>
                                             </div>
-                                            <Badge variant={confidenceScore >= 80 ? 'success' : confidenceScore >= 50 ? 'warning' : 'destructive'}>
+                                            <Badge variant={confidenceScore >= 80 ? 'success' : confidenceScore >= 50 ? 'warning' : 'error'}>
                                                 {confidenceScore >= 80 ? 'High' : confidenceScore >= 50 ? 'Medium' : 'Low'}
                                             </Badge>
                                         </div>
