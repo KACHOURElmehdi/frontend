@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/+$/, '');
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'https://docclassifier-backend-latest.onrender.com/api').replace(/\/+$/, '');
 const API_URL_WITH_SLASH = `${API_URL}/`;
 
 const normalizeUrl = (url?: string) => {
