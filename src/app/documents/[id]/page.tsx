@@ -126,7 +126,7 @@ export default function DocumentPage({ params }: { params: Promise<{ id: string 
 
     const shouldListen = document?.status === 'PROCESSING' || document?.status === 'UPLOADED';
 
-    useSSE(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080/api'}/documents/${id}/events`, {
+    useSSE(`${process.env.NEXT_PUBLIC_API_BASE || 'https://docclassifier-backend-latest.onrender.com/api'}/documents/${id}/events`, {
         enabled: shouldListen,
         onMessage: (event) => {
             try {
